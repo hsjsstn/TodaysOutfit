@@ -7,9 +7,12 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -24,6 +27,9 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import ddwu.com.mobile.project.todaysoutfit.R
+import ddwu.com.mobile.project.todaysoutfit.data.DiaryDatabase
+import ddwu.com.mobile.project.todaysoutfit.data.entity.DiaryEntryEntity
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -31,7 +37,7 @@ import java.util.Locale
 class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var googleMap: GoogleMap
-    private lateinit var satisfactionDropdown: AutoCompleteTextView
+    private lateinit var satisfactionDropdown: Spinner
     private lateinit var saveButton: Button
     private lateinit var topOutfitInput: EditText
     private lateinit var bottomOutfitInput: EditText
@@ -46,6 +52,8 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var placesClient: PlacesClient
     private lateinit var searchedPlace: TextView
     private lateinit var geocoder: Geocoder
+
+    private lateinit var diaryDatabase: DiaryDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,12 +87,31 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Save button logic
         saveButton.setOnClickListener {
+            val date = dateEditText.text.toString()
+            val place = searchedPlace.text.toString()
+            val satisfaction = satisfactionDropdown.selectedItem.toString()
             val topOutfit = topOutfitInput.text.toString()
             val bottomOutfit = bottomOutfitInput.text.toString()
             val outerOutfit = outerOutfitInput.text.toString()
             val accessories = accessoriesInput.text.toString()
             val memo = memoInput.text.toString()
-            val satisfaction = satisfactionDropdown.text.toString()
+
+            val diaryEntry = DiaryEntryEntity(
+                date = date,
+                location = place,
+                top = topOutfit,
+                bottom = bottomOutfit,
+                outer = outerOutfit,
+                accessory = accessories,
+                satisfaction = satisfaction,
+                memo = memo
+            )
+
+            lifecycleScope.launch {
+                diaryDatabase.diaryDAO().insertDiary(diaryEntry)
+                Toast.makeText(this@AddDiaryEntryActivity, "저장되었습니다!", Toast.LENGTH_SHORT).show()
+                finish() // 저장 후 액티비티 종료
+            }
 
             // Save logic here (e.g., store in a database or send to another activity)
             if (selectedLocation != null) {
@@ -132,6 +159,13 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
                 updateMarkerAndAddress(latLng)
             }
         }
+
+        // Room DB 인스턴스 초기화
+        diaryDatabase = Room.databaseBuilder(
+            applicationContext,
+            DiaryDatabase::class.java,
+            "diary_database"
+        ).build()
     }
 
     override fun onMapReady(map: GoogleMap) {
