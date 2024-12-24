@@ -37,12 +37,20 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Initialize UI components
         satisfactionDropdown = findViewById(R.id.satisfaction)
-        saveButton = findViewById(R.id.saveButton)
+        dateEditText = findViewById(R.id.selectDate)
         topOutfitInput = findViewById(R.id.topOutfit)
         bottomOutfitInput = findViewById(R.id.bottomOutfit)
         outerOutfitInput = findViewById(R.id.outerOutfit)
         accessoriesInput = findViewById(R.id.accessories)
         memoInput = findViewById(R.id.memo)
+        saveButton = findViewById(R.id.saveButton)
+
+
+        // Intent로 전달받은 날짜 설정
+        val receivedDate = intent.getStringExtra("selectedDate")
+        if (!receivedDate.isNullOrEmpty()) {
+            dateEditText.setText(receivedDate) // 선택된 날짜 설정
+        }
 
         // Set up satisfaction dropdown menu
         val satisfactionOptions = listOf("Good", "Not Bad", "Cold", "Hot")
@@ -71,7 +79,7 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         // 날짜 입력 EditText
-        dateEditText = findViewById(R.id.date)
+        dateEditText = findViewById(R.id.selectDate)
 
         // EditText 클릭 시 달력 팝업 표시
         dateEditText.setOnClickListener {
