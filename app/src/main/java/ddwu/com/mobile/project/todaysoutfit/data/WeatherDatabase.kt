@@ -1,36 +1,31 @@
 package ddwu.com.mobile.project.todaysoutfit.data
 
-import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import ddwu.com.mobile.project.todaysoutfit.data.dao.WeatherDAO
+import ddwu.com.mobile.project.todaysoutfit.data.entity.WeatherEntity
 
-object WeatherDatabase {
+@Database(entities = [WeatherEntity::class], version = 1, exportSchema = false)
+abstract class WeatherDatabase : RoomDatabase() {
 
-    fun getTodayWeather(location: String): WeatherDTO {
-        val weatherApiUrl = "https://api.weather.go.kr/...&location=$location" // API URL 수정 필요
-        val jsonResponse = fetchWeatherData(weatherApiUrl)
+    abstract fun weatherDAO(): WeatherDAO
 
-        return parseWeatherData(jsonResponse)
-    }
+    companion object {
+        @Volatile
+        private var INSTANCE: WeatherDatabase? = null
 
-    private fun fetchWeatherData(apiUrl: String): String {
-        val url = URL(apiUrl)
-        val connection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = "GET"
-        connection.connect()
-
-        val inputStream = connection.inputStream.bufferedReader()
-        return inputStream.use { it.readText() }
-    }
-
-    private fun parseWeatherData(jsonResponse: String): WeatherDTO {
-        val jsonObject = JSONObject(jsonResponse)
-
-        return WeatherDTO().apply {
-            temperature = jsonObject.getJSONObject("main").getDouble("temp")
-            maxTemperature = jsonObject.getJSONObject("main").getDouble("temp_max")
-            minTemperature = jsonObject.getJSONObject("main").getDouble("temp_min")
-            condition = jsonObject.getJSONArray("weather").getJSONObject(0).getString("description")
+        fun getDatabase(context: Context): WeatherDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    WeatherDatabase::class.java,
+                    "weather_database"
+                ).build()
+                INSTANCE = instance
+                instance
+            }
         }
     }
 }

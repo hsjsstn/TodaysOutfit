@@ -1,4 +1,4 @@
-package ddwu.com.mobile.project.todaysoutfit
+package ddwu.com.mobile.project.todaysoutfit.ui.activity
 
 class DiaryCalendarActivity {
 }

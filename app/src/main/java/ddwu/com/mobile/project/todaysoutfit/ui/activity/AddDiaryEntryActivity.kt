@@ -1,4 +1,4 @@
-package ddwu.com.mobile.project.todaysoutfit
+package ddwu.com.mobile.project.todaysoutfit.ui.activity
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -13,6 +13,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import ddwu.com.mobile.project.todaysoutfit.R
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

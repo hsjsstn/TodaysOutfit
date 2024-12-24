@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#00FFFFFF"
-    tools:context=".MainActivity"
+    tools:context=".ui.activity.MainActivity"
     tools:layout_editor_absoluteX="-25dp"
     tools:layout_editor_absoluteY="2dp">
 
@@ -282,5 +282,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/calendar_icon" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="16dp"
+        android:text="지난 옷차림"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/recmdDate1"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

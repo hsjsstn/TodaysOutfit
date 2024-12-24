@@ -1,36 +1,34 @@
 package ddwu.com.mobile.project.todaysoutfit.data
 
-object DiaryDatabase {
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import ddwu.com.mobile.project.todaysoutfit.data.dao.DiaryDAO
+import ddwu.com.mobile.project.todaysoutfit.data.dao.WeatherDAO
+import ddwu.com.mobile.project.todaysoutfit.data.entity.DiaryEntryEntity
+import ddwu.com.mobile.project.todaysoutfit.data.entity.WeatherEntity
 
-    private val diaryEntries = mutableListOf<DiaryEntryDTO>()
+@Database(entities = [DiaryEntryEntity::class, WeatherEntity::class], version = 1, exportSchema = false)
+abstract class DiaryDatabase : RoomDatabase() {
 
-    fun addDiaryEntry(entry: DiaryEntryDTO) {
-        diaryEntries.add(entry)
-    }
+    abstract fun diaryDAO(): DiaryDAO
+    abstract fun weatherDAO(): WeatherDAO
 
-    fun updateDiaryEntry(date: String, updatedEntry: DiaryEntryDTO) {
-        diaryEntries.find { it.date == date }?.apply {
-            location = updatedEntry.location
-            maxTemperature = updatedEntry.maxTemperature
-            minTemperature = updatedEntry.minTemperature
-            top = updatedEntry.top
-            bottom = updatedEntry.bottom
-            outer = updatedEntry.outer
-            accessory = updatedEntry.accessory
-            satisfaction = updatedEntry.satisfaction
-            memo = updatedEntry.memo
+    companion object {
+        @Volatile
+        private var INSTANCE: DiaryDatabase? = null
+
+        fun getDatabase(context: Context): DiaryDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    DiaryDatabase::class.java,
+                    "diary_database"
+                ).build()
+                INSTANCE = instance
+                instance
+            }
         }
-    }
-
-    fun deleteDiaryEntry(date: String) {
-        diaryEntries.removeIf { it.date == date }
-    }
-
-    fun getDiaryEntry(date: String): DiaryEntryDTO? {
-        return diaryEntries.find { it.date == date }
-    }
-
-    fun getAllDiaryEntries(): List<DiaryEntryDTO> {
-        return diaryEntries.toList()
     }
 }

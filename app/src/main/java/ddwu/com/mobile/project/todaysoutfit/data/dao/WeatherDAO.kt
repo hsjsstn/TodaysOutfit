@@ -1,9 +1,10 @@
-package ddwu.com.mobile.project.todaysoutfit.data
+package ddwu.com.mobile.project.todaysoutfit.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import ddwu.com.mobile.project.todaysoutfit.data.entity.WeatherEntity
 
 @Dao
 interface WeatherDAO {

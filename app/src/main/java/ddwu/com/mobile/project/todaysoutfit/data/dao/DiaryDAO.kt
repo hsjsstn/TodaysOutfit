@@ -1,7 +1,8 @@
-package ddwu.com.mobile.project.todaysoutfit.data
+package ddwu.com.mobile.project.todaysoutfit.data.dao
 
 import DiaryWithWeather
 import androidx.room.*
+import ddwu.com.mobile.project.todaysoutfit.data.entity.DiaryEntryEntity
 
 @Dao
 interface DiaryDAO {

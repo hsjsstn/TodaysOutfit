@@ -1,4 +1,4 @@
-package ddwu.com.mobile.project.todaysoutfit.data
+package ddwu.com.mobile.project.todaysoutfit.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
