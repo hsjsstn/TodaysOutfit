@@ -40,6 +40,12 @@ class DiaryCalendarActivity : AppCompatActivity() {
             selectedDateTextView.text = selectedDate // TextView에 표시
         }
 
+        // 옷차림 보기 버튼 클릭 이벤트
+        findViewById<Button>(R.id.viewDiaryEntityBtn).setOnClickListener {
+            val intent = Intent(this, DiaryDetailActivity::class.java)
+            startActivity(intent)
+        }
+
         // 작성하기 버튼 클릭 이벤트
         findViewById<Button>(R.id.addDiaryEntityBtn).setOnClickListener {
             val intent = Intent(this, AddDiaryEntryActivity::class.java)

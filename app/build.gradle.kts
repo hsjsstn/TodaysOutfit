@@ -9,6 +9,7 @@ android {
     compileSdk = 34
     buildFeatures {
         buildConfig = true
+        viewBinding = true
     }
     defaultConfig {
         applicationId = "ddwu.com.mobile.project.todaysoutfit"
@@ -75,6 +76,7 @@ dependencies {
 
     // GoogleMap
     implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.android.libraries.places:places:3.1.0")
 
     // 기상청 API
     // Retrofit
