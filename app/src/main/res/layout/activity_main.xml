@@ -11,7 +11,7 @@
     tools:layout_editor_absoluteY="2dp">
 
     <TextView
-        android:id="@+id/textView17"
+        android:id="@+id/lastSatisfaction3"
         android:layout_width="100dp"
         android:layout_height="42dp"
         android:text="Not Bad!"
@@ -117,7 +117,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView14"
+        android:id="@+id/lastSatisfaction2"
         android:layout_width="100dp"
         android:layout_height="42dp"
         android:layout_marginStart="16dp"
@@ -126,9 +126,9 @@
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/textView17"
+        app:layout_constraintEnd_toStartOf="@+id/lastSatisfaction3"
         app:layout_constraintHorizontal_bias="0.166"
-        app:layout_constraintStart_toEndOf="@+id/textView11"
+        app:layout_constraintStart_toEndOf="@+id/lastSatisfaction1"
         app:layout_constraintTop_toBottomOf="@+id/lastOutfit2"
         app:layout_constraintVertical_bias="0.342" />
 
@@ -162,7 +162,7 @@
         app:layout_constraintStart_toEndOf="@+id/recmdDate1" />
 
     <TextView
-        android:id="@+id/textView11"
+        android:id="@+id/lastSatisfaction1"
         android:layout_width="100dp"
         android:layout_height="42dp"
         android:layout_marginStart="28dp"
