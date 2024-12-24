@@ -5,7 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "diary_entries")
 data class DiaryEntryEntity(
-    @PrimaryKey val date: String,
+    @PrimaryKey(autoGenerate = true) val diaryId: Int = 0,
+    val date: String,
     var location: String?,
     var maxTemperature: Int?,
     var minTemperature: Int?,

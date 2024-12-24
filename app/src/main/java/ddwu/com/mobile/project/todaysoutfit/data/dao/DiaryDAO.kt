@@ -1,6 +1,5 @@
 package ddwu.com.mobile.project.todaysoutfit.data.dao
 
-import DiaryWithWeather
 import androidx.room.*
 import ddwu.com.mobile.project.todaysoutfit.data.entity.DiaryEntryEntity
 
@@ -16,13 +15,9 @@ interface DiaryDAO {
     @Delete
     suspend fun deleteDiary(diary: DiaryEntryEntity)
 
-    @Query("SELECT * FROM diary_entries WHERE weatherDate = :weatherDate")
+    @Query("SELECT * FROM diary_entries WHERE date = :weatherDate")
     suspend fun getDiaryByWeatherDate(weatherDate: String): List<DiaryEntryEntity>
 
     @Query("SELECT * FROM diary_entries")
     suspend fun getAllDiaries(): List<DiaryEntryEntity>
-
-    @Transaction
-    @Query("SELECT * FROM diary_entries WHERE id = :diaryId")
-    suspend fun getDiaryWithWeather(diaryId: Int): DiaryWithWeather
 }

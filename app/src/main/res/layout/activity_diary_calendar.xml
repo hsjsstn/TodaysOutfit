@@ -15,4 +15,14 @@
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/addDiaryEntityBtn"
+        android:layout_width="201dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="68dp"
+        android:text="작성하기"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

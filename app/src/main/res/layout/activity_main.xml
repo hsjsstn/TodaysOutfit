@@ -273,12 +273,13 @@
         app:srcCompat="@drawable/main_clothes" />
 
     <ImageButton
-        android:id="@+id/imageButton4"
+        android:id="@+id/goToCalendar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="@null"
+        android:contentDescription="캘린더로 이동"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/calendar_icon" />

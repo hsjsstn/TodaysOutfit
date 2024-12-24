@@ -1,10 +1,13 @@
 package ddwu.com.mobile.project.todaysoutfit.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import ddwu.com.mobile.project.todaysoutfit.ui.activity.DiaryCalendarActivity
 import ddwu.com.mobile.project.todaysoutfit.R
 
 class MainActivity : AppCompatActivity() {
@@ -16,6 +19,12 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        val goToCalendarButton = findViewById<ImageButton>(R.id.goToCalendar)
+        goToCalendarButton.setOnClickListener {
+            val intent = Intent(this, DiaryCalendarActivity::class.java)
+            startActivity(intent)
         }
     }
 }

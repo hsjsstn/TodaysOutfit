@@ -14,3 +14,4 @@
 .cxx
 local.properties
 app/src/main/java/ddwu/com/mobile/project/todaysoutfit/data/ApiKey.kt
+app/src/main/AndroidManifest.xml

@@ -7,7 +7,9 @@ plugins {
 android {
     namespace = "ddwu.com.mobile.project.todaysoutfit"
     compileSdk = 34
-
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         applicationId = "ddwu.com.mobile.project.todaysoutfit"
         minSdk = 24
@@ -69,6 +71,7 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version" )
 
     // GoogleMap
     implementation("com.google.android.gms:play-services-maps:19.0.0")
