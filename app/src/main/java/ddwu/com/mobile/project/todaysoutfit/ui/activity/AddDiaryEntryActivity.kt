@@ -40,6 +40,8 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var googleMap: GoogleMap
     private lateinit var satisfactionDropdown: Spinner
     private lateinit var saveButton: Button
+    private lateinit var maxTempInput: EditText
+    private lateinit var minTempInput: EditText
     private lateinit var topOutfitInput: EditText
     private lateinit var bottomOutfitInput: EditText
     private lateinit var outerOutfitInput: EditText
@@ -63,6 +65,8 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
         // Initialize UI components
         satisfactionDropdown = findViewById(R.id.satisfaction)
         dateEditText = findViewById(R.id.selectDate)
+        maxTempInput = findViewById(R.id.maxTemp)
+        minTempInput = findViewById(R.id.minTemp)
         topOutfitInput = findViewById(R.id.topOutfit)
         bottomOutfitInput = findViewById(R.id.bottomOutfit)
         outerOutfitInput = findViewById(R.id.outerOutfit)
@@ -112,6 +116,8 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
         saveButton.setOnClickListener {
             val date = dateEditText.text.toString()
             val place = searchedPlace.text.toString()
+            val maxTemp = maxTempInput.text.toString()
+            val minTemp = minTempInput.text.toString()
             val satisfaction = satisfactionDropdown.selectedItem.toString()
             val topOutfit = topOutfitInput.text.toString()
             val bottomOutfit = bottomOutfitInput.text.toString()
@@ -144,7 +150,9 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
                 outer = outerOutfit,
                 accessory = accessories,
                 satisfaction = satisfaction,
-                memo = memo
+                memo = memo,
+                maxTemperature = maxTemp.toDoubleOrNull(),
+                minTemperature = minTemp.toDoubleOrNull()
             )
 
             lifecycleScope.launch {
@@ -317,6 +325,8 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun populateDiaryData(diary: DiaryEntryEntity) {
         dateEditText.setText(diary.date)
         searchedPlace.text = diary.location ?: "장소를 검색하세요."
+        maxTempInput.setText(diary.maxTemperature.toString())
+        minTempInput.setText(diary.minTemperature.toString())
         satisfactionDropdown.setSelection(
             (satisfactionDropdown.adapter as ArrayAdapter<String>).getPosition(diary.satisfaction)
         )

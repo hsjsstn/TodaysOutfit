@@ -8,7 +8,6 @@
     tools:layout_editor_absoluteY="50dp">
 
     <!-- Google Map -->
-
     <fragment
         android:id="@+id/googleMap"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -55,11 +54,12 @@
         app:layout_constraintTop_toBottomOf="@+id/searchedPlace" />
 
     <!-- Date -->
+
+    <!-- Top Outfit -->
     <EditText
         android:id="@+id/selectDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:clickable="true"
         android:focusable="false"
         android:hint="날짜 선택"
@@ -67,9 +67,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/satisfaction" />
+        app:layout_constraintTop_toBottomOf="@+id/maxTemp" />
 
-    <!-- Top Outfit -->
     <EditText
         android:id="@+id/topOutfit"
         android:layout_width="0dp"
@@ -158,5 +157,26 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchInput" />
+
+    <EditText
+        android:id="@+id/maxTemp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="최대 기온"
+        android:inputType="phone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/satisfaction" />
+
+    <EditText
+        android:id="@+id/minTemp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="최저 기온"
+        android:inputType="phone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/maxTemp"
+        app:layout_constraintTop_toBottomOf="@+id/satisfaction" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

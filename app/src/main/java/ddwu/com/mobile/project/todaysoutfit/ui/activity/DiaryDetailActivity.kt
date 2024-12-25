@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import ddwu.com.mobile.project.todaysoutfit.R
 import ddwu.com.mobile.project.todaysoutfit.data.viewmodel.DiaryViewModel
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 import java.util.Locale
 
 class DiaryDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -28,6 +29,7 @@ class DiaryDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var selectDate: TextView
     private lateinit var satisfaction: TextView
     private lateinit var address: TextView
+    private lateinit var maxMinTemp: TextView
     private lateinit var topOutfit: TextView
     private lateinit var bottomOutfit: TextView
     private lateinit var outerOutfit: TextView
@@ -54,6 +56,7 @@ class DiaryDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         selectDate = findViewById(R.id.selectDate)
         address = findViewById(R.id.address)
         satisfaction = findViewById(R.id.satisfaction)
+        maxMinTemp = findViewById(R.id.maxMinTemp)
         topOutfit = findViewById(R.id.topOutfit)
         bottomOutfit = findViewById(R.id.bottomOutfit)
         outerOutfit = findViewById(R.id.outerOutfit)
@@ -95,6 +98,7 @@ class DiaryDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 // UI 업데이트
                 selectDate.text = diary.date
                 address.text = diary.location
+                maxMinTemp.text = diary.maxTemperature.toString() + "°C / " + diary.minTemperature.toString() + "°C"
                 satisfaction.text = diary.satisfaction
                 topOutfit.text = diary.top
                 bottomOutfit.text = diary.bottom

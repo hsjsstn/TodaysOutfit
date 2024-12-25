@@ -16,6 +16,7 @@ import ddwu.com.mobile.project.todaysoutfit.data.network.WeatherResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,6 +29,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recmdDate1: TextView
     private lateinit var recmdDate2: TextView
     private lateinit var recmdDate3: TextView
+
+    private lateinit var recmdTemp1: TextView
+    private lateinit var recmdTemp2: TextView
+    private lateinit var recmdTemp3: TextView
 
     private lateinit var lastOutfit1: TextView
     private lateinit var lastOutfit2: TextView
@@ -53,6 +58,10 @@ class MainActivity : AppCompatActivity() {
         recmdDate1 = findViewById(R.id.recmdDate1)
         recmdDate2 = findViewById(R.id.recmdDate2)
         recmdDate3 = findViewById(R.id.recmdDate3)
+
+        recmdTemp1 = findViewById(R.id.recmdTemp1)
+        recmdTemp2 = findViewById(R.id.recmdTemp2)
+        recmdTemp3 = findViewById(R.id.recmdTemp3)
 
         lastOutfit1 = findViewById(R.id.lastOutfit1)
         lastOutfit2 = findViewById(R.id.lastOutfit2)
@@ -82,9 +91,9 @@ class MainActivity : AppCompatActivity() {
                 val dateString = dateFormat.format(calendar.time)
 
                 when (i) {
-                    1 -> updateDiaryInfo(diaryDAO, dateString, recmdDate1, lastOutfit1, lastSatisfaction1)
-                    2 -> updateDiaryInfo(diaryDAO, dateString, recmdDate2, lastOutfit2, lastSatisfaction2)
-                    3 -> updateDiaryInfo(diaryDAO, dateString, recmdDate3, lastOutfit3, lastSatisfaction3)
+                    1 -> updateDiaryInfo(diaryDAO, dateString, recmdDate1, recmdTemp1, lastOutfit1, lastSatisfaction1)
+                    2 -> updateDiaryInfo(diaryDAO, dateString, recmdDate2, recmdTemp2, lastOutfit2, lastSatisfaction2)
+                    3 -> updateDiaryInfo(diaryDAO, dateString, recmdDate3, recmdTemp3, lastOutfit3, lastSatisfaction3)
                 }
             }
         }
@@ -94,6 +103,7 @@ class MainActivity : AppCompatActivity() {
         diaryDAO: ddwu.com.mobile.project.todaysoutfit.data.dao.DiaryDAO,
         date: String,
         dateView: TextView,
+        tmpView: TextView,
         outfitView: TextView,
         satisfactionView: TextView
     ) {
@@ -101,7 +111,11 @@ class MainActivity : AppCompatActivity() {
         val diaryEntry = diaryDAO.getDiaryById(diaryId)
 
         dateView.text = date // 날짜 출력
+
         if (diaryEntry != null) {
+            val tmpStr = diaryEntry.maxTemperature.toString() + "°C / " + diaryEntry.minTemperature.toString() + "°C"
+            tmpView.text = tmpStr
+
             val outfit = buildString {
                 appendLine(diaryEntry.top)
                 appendLine(diaryEntry.bottom)
@@ -113,6 +127,7 @@ class MainActivity : AppCompatActivity() {
             // 만족도 출력
             satisfactionView.text = diaryEntry.satisfaction ?: ""
         } else {
+            tmpView.text = "기온 정보 없음"
             outfitView.text = "옷차림 정보 없음"
             satisfactionView.text = ""
         }
