@@ -122,7 +122,7 @@ class DiaryDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                             showError("해당 주소로 위치를 찾을 수 없습니다.")
                         }
                     } catch (e: Exception) {
-                        showError("지도 업데이트 중 오류 발생: ${e.localizedMessage}")
+                        //showError("지도 업데이트 중 오류 발생: ${e.localizedMessage}")
                     }
                 }
             } else {

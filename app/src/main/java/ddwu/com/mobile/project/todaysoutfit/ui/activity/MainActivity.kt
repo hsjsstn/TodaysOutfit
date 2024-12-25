@@ -206,6 +206,17 @@ class MainActivity : AppCompatActivity() {
                             "최고/최저 기온 정보를 찾을 수 없습니다."
                         }
 
+                    // 비 올 확률 가져오기
+                    val rainfallProbability = items?.find { it.category == "POP" }?.fcstValue
+
+                    findViewById<TextView>(R.id.rainfall).text =
+                        if (rainfallProbability != null) {
+                            "비 올 확률: $rainfallProbability%"
+                        } else {
+                            "비 올 확률 정보를 찾을 수 없습니다."
+                        }
+
+
                     // SKY와 PTY 데이터 가져오기
                     val sky = items?.find { it.category == "SKY" }?.fcstValue?.toIntOrNull()
                     val pty = items?.find { it.category == "PTY" }?.fcstValue?.toIntOrNull()
