@@ -1,6 +1,7 @@
 package ddwu.com.mobile.project.todaysoutfit.ui.activity
 
 import android.content.Intent
+import android.location.Geocoder
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import ddwu.com.mobile.project.todaysoutfit.R
 import ddwu.com.mobile.project.todaysoutfit.data.viewmodel.DiaryViewModel
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class DiaryDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -86,6 +88,7 @@ class DiaryDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         lifecycleScope.launch {
             val diary = diaryViewModel.getDiaryById(id)
             if (diary != null) {
+                // UI 업데이트
                 selectDate.text = diary.date
                 address.text = diary.location
                 satisfaction.text = diary.satisfaction
@@ -95,12 +98,23 @@ class DiaryDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 accessories.text = diary.accessory
                 memo.text = diary.memo
 
-                // diary.location을 불변 변수에 저장
+                // 지도 업데이트 로직
                 val locationString = diary.location
                 if (!locationString.isNullOrEmpty()) {
-                    val location = locationString.split(",").map { it.trim().toDoubleOrNull() }
-                    if (location.size == 2 && location[0] != null && location[1] != null) {
-                        updateMap(LatLng(location[0]!!, location[1]!!), locationString)
+                    try {
+                        val geocoder = Geocoder(this@DiaryDetailActivity, Locale.getDefault())
+                        val addresses = geocoder.getFromLocationName(locationString, 1)
+
+                        if (!addresses.isNullOrEmpty()) {
+                            val address = addresses[0]
+                            val latLng = LatLng(address.latitude, address.longitude)
+
+                            updateMap(latLng, locationString)
+                        } else {
+                            showError("해당 주소로 위치를 찾을 수 없습니다.")
+                        }
+                    } catch (e: Exception) {
+                        showError("지도 업데이트 중 오류 발생: ${e.localizedMessage}")
                     }
                 }
             } else {
