@@ -97,7 +97,25 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
             val accessories = accessoriesInput.text.toString()
             val memo = memoInput.text.toString()
 
+            // 날짜를 Int로 변환하여 id 생성
+            val id = try {
+                val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault())
+                val parsedDate = dateFormat.parse(date)
+                val formattedId = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(parsedDate)
+                formattedId.toInt()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null // 변환 실패 시 null 반환
+            }
+
+            // id 변환 실패 처리
+            if (id == null) {
+                showAlert("날짜 형식이 잘못되었습니다. 다시 선택해주세요.")
+                return@setOnClickListener
+            }
+
             val diaryEntry = DiaryEntryEntity(
+                id = id,
                 date = date,
                 location = place,
                 top = topOutfit,
