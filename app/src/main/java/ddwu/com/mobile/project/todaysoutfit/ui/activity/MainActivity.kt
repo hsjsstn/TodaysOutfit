@@ -10,8 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import ddwu.com.mobile.project.todaysoutfit.R
 import ddwu.com.mobile.project.todaysoutfit.data.DiaryDatabase
+import ddwu.com.mobile.project.todaysoutfit.data.RecommendDatabase
 import ddwu.com.mobile.project.todaysoutfit.data.network.RetrofitInstance
 import ddwu.com.mobile.project.todaysoutfit.data.network.WeatherResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -142,10 +145,11 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>) {
                 if (response.isSuccessful) {
                     val items = response.body()?.response?.body?.items?.item
-                    val currentTemperature = items?.find { it.category == "T1H" }?.obsrValue
+                    val currentTemperature = items?.find { it.category == "T1H" }?.obsrValue?.toDoubleOrNull()
 
                     findViewById<TextView>(R.id.currentTemp).text =
                         currentTemperature?.let { "$it°C" } ?: "기온 정보를 찾을 수 없습니다."
+                    updateClothingSuggestion(currentTemperature)
                 }
             }
 
@@ -236,6 +240,44 @@ class MainActivity : AppCompatActivity() {
             else -> {
                 // 기본 이미지 (맑음 이미지)
                 weatherImg.setImageResource(R.drawable.weather_sun)
+            }
+        }
+    }
+
+    private fun updateClothingSuggestion(currentTemp: Double?) {
+        val todayRecmd = findViewById<TextView>(R.id.todayRecmd)
+
+        lifecycleScope.launch {
+            try {
+                // RecommendDAO 가져오기
+                val scope = CoroutineScope(Dispatchers.IO)
+                val recommendDAO = RecommendDatabase.getDatabase(this@MainActivity, scope).recommendDAO()
+
+                // 모든 추천 데이터 가져오기
+                val recommendations = recommendDAO.getAllRecommendations()
+
+                if (currentTemp != null) {
+                    var recommendationText = "적절한 의상 추천을 찾을 수 없습니다."
+
+                    // 0부터 7까지 반복하여 탐색
+                    for (i in 0..7) {
+                        val recommendation = recommendations.getOrNull(i)
+                        if (recommendation != null &&
+                            currentTemp >= recommendation.minTemp &&
+                            currentTemp <= recommendation.maxTemp
+                        ) {
+                            recommendationText = recommendation.clothingSuggestion
+                            break
+                        }
+                    }
+
+                    // TextView에 추천 결과 출력
+                    todayRecmd.text = recommendationText
+                } else {
+                    todayRecmd.text = "기온 정보를 찾을 수 없습니다."
+                }
+            } catch (e: Exception) {
+                todayRecmd.text = "추천 데이터를 불러오는 중 오류가 발생했습니다."
             }
         }
     }
