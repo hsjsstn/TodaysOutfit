@@ -16,6 +16,7 @@ import java.util.Calendar
 import java.util.Locale
 import android.app.AlertDialog
 import android.util.Log
+import android.widget.ImageButton
 
 
 class DiaryCalendarActivity : AppCompatActivity() {
@@ -45,6 +46,12 @@ class DiaryCalendarActivity : AppCompatActivity() {
             // 선택된 날짜 형식 설정
             selectedDate = String.format("%04d년 %02d월 %02d일", year, month + 1, dayOfMonth)
             selectedDateTextView.text = selectedDate // TextView에 표시
+        }
+
+        val goToHomeButton = findViewById<ImageButton>(R.id.goToHome)
+        goToHomeButton.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
 
         // 옷차림 보기 버튼 클릭 이벤트
