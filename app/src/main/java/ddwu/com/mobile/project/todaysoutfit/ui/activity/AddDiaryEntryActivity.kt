@@ -156,16 +156,44 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
             )
 
             lifecycleScope.launch {
-                if (diaryId == -1) {
-                    // 새로운 데이터 삽입
-                    diaryDatabase.diaryDAO().insertDiary(diaryEntry)
-                } else {
-                    // 기존 데이터 업데이트
-                    diaryDatabase.diaryDAO().updateDiary(diaryEntry)
+                diaryDatabase.diaryDAO().insertDiary(diaryEntry)
+
+                val defaultPlaceText = "장소를 검색하세요."
+                val missingFields = mutableListOf<String>()
+
+                val existingDiary = diaryDatabase.diaryDAO().getDiaryById(diaryId)
+                if (existingDiary != null && diaryId == -1) {
+                    // If it's a new entry but an existing record is found
+                    showAlert("해당 날짜에 이미 옷차림 기록이 존재합니다.")
                 }
-                // 데이터베이스 업데이트 후 이전 액티비티 종료
-                setResult(RESULT_OK) // 이전 액티비티로 성공 상태 전달
-                finish() // 현재 액티비티 종료
+
+                // 각 입력 필드가 비었는지 확인
+                if (dateEditText.text.toString().trim().isEmpty()) {
+                    missingFields.add("날짜를")
+                }
+                else if (searchedPlace.text.toString().trim().isEmpty() || searchedPlace.text.toString() == defaultPlaceText) {
+                    missingFields.add("장소 정보를")
+                }
+                else if(satisfactionDropdown.selectedItem.toString().trim().isEmpty()) {
+                    missingFields.add("만족도를")
+                }
+                else if (topOutfitInput.text.toString().trim().isEmpty()) {
+                    missingFields.add("상의 정보를")
+                }
+                else if (bottomOutfitInput.text.toString().trim().isEmpty()) {
+                    missingFields.add("하의 정보를")
+                }
+                if (missingFields.isNotEmpty()) {
+                    val message = missingFields.joinToString("\n") { "$it 입력하지 않았습니다." }
+                    showAlert(message)
+                } else {
+                    lifecycleScope.launch {
+                        diaryDatabase.diaryDAO().insertDiary(diaryEntry)
+                        Toast.makeText(this@AddDiaryEntryActivity, "저장되었습니다!", Toast.LENGTH_SHORT)
+                            .show()
+                        finish() // 저장 후 액티비티 종료
+                    }
+                }
             }
         }
 
@@ -268,7 +296,7 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
     // 입력 에러 관리
     private fun showAlert(message: String) {
         AlertDialog.Builder(this)
-            .setTitle("입력 오류")
+            .setTitle("오류")
             .setMessage(message)
             .setPositiveButton("확인", null)
             .show()
