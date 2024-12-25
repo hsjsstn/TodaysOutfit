@@ -87,6 +87,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     // Converter ( JSON 타입 결과를 객체로 매핑 )
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
     // coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")

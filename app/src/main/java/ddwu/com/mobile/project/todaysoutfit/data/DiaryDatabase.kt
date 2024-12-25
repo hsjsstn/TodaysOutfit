@@ -8,9 +8,8 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import ddwu.com.mobile.project.todaysoutfit.data.dao.DiaryDAO
 import ddwu.com.mobile.project.todaysoutfit.data.entity.DiaryEntryEntity
-import ddwu.com.mobile.project.todaysoutfit.data.entity.WeatherEntity
 
-@Database(entities = [DiaryEntryEntity::class, WeatherEntity::class], version = 2, exportSchema = false)
+@Database(entities = [DiaryEntryEntity::class], version = 2, exportSchema = false)
 abstract class DiaryDatabase : RoomDatabase() {
 
     abstract fun diaryDAO(): DiaryDAO
