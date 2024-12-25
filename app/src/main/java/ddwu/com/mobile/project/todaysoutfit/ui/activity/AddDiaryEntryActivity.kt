@@ -191,7 +191,8 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
                         diaryDatabase.diaryDAO().insertDiary(diaryEntry)
                         Toast.makeText(this@AddDiaryEntryActivity, "저장되었습니다!", Toast.LENGTH_SHORT)
                             .show()
-                        finish() // 저장 후 액티비티 종료
+                        setResult(RESULT_OK) // 이전 액티비티로 성공 상태 전달
+                        finish() // 현재 액티비티 종료
                     }
                 }
             }
