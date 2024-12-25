@@ -155,7 +155,9 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
                     // 기존 데이터 업데이트
                     diaryDatabase.diaryDAO().updateDiary(diaryEntry)
                 }
-                finish() // 저장 후 종료
+                // 데이터베이스 업데이트 후 이전 액티비티 종료
+                setResult(RESULT_OK) // 이전 액티비티로 성공 상태 전달
+                finish() // 현재 액티비티 종료
             }
         }
 

@@ -39,6 +39,10 @@ class DiaryDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var diaryId: Int = 0
 
+    companion object {
+        const val REQUEST_CODE_EDIT = 1001
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_diary_detail)
@@ -73,7 +77,7 @@ class DiaryDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         editButton.setOnClickListener {
             val intent = Intent(this, AddDiaryEntryActivity::class.java)
             intent.putExtra("diaryId", diaryId) // Diary ID 전달
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_CODE_EDIT)
         }
 
         // 삭제 버튼 클릭
@@ -147,5 +151,12 @@ class DiaryDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_EDIT && resultCode == RESULT_OK) {
+            loadDiaryDetails(diaryId) // 수정된 데이터를 다시 로드
+        }
     }
 }
