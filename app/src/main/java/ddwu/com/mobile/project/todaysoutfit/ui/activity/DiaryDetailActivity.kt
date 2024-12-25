@@ -69,9 +69,8 @@ class DiaryDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 수정 버튼 클릭
         editButton.setOnClickListener {
-            val intent = Intent(this, AddDiaryEntryActivity::class.java).apply {
-                putExtra("DIARY_ID", diaryId)
-            }
+            val intent = Intent(this, AddDiaryEntryActivity::class.java)
+            intent.putExtra("diaryId", diaryId) // Diary ID 전달
             startActivity(intent)
         }
 

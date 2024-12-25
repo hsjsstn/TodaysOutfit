@@ -86,6 +86,28 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.googleMap) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        // Room DB 초기화
+        diaryDatabase = Room.databaseBuilder(
+            applicationContext,
+            DiaryDatabase::class.java,
+            "diary_database"
+        ).build()
+
+        // 전달받은 diaryId 확인
+        val diaryId = intent.getIntExtra("diaryId", -1)
+
+        if (diaryId != -1) {
+            // 수정 모드 - diaryId에 해당하는 데이터를 불러와 UI에 채움
+            lifecycleScope.launch {
+                val diary = diaryDatabase.diaryDAO().getDiaryById(diaryId)
+                diary?.let {
+                    populateDiaryData(it)
+                } ?: run {
+                    showAlert("저장된 옷차림 데이터를 불러올 수 없습니다.")
+                }
+            }
+        }
+
         // Save button logic
         saveButton.setOnClickListener {
             val date = dateEditText.text.toString()
@@ -108,7 +130,6 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
                 null // 변환 실패 시 null 반환
             }
 
-            // id 변환 실패 처리
             if (id == null) {
                 showAlert("날짜 형식이 잘못되었습니다. 다시 선택해주세요.")
                 return@setOnClickListener
@@ -126,42 +147,15 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
                 memo = memo
             )
 
-            val defaultPlaceText = "장소를 검색하세요."
-            val missingFields = mutableListOf<String>()
-
-            // 각 입력 필드가 비었는지 확인
-            if (dateEditText.text.toString().trim().isEmpty()) {
-                missingFields.add("날짜를")
-            }
-            else if (searchedPlace.text.toString().trim().isEmpty() || searchedPlace.text.toString() == defaultPlaceText) {
-                missingFields.add("장소 정보를")
-            }
-            else if(satisfactionDropdown.selectedItem.toString().trim().isEmpty()) {
-                missingFields.add("만족도를")
-            }
-            else if (topOutfitInput.text.toString().trim().isEmpty()) {
-                missingFields.add("상의 정보를")
-            }
-            else if (bottomOutfitInput.text.toString().trim().isEmpty()) {
-                missingFields.add("하의 정보를")
-            }
-            if (missingFields.isNotEmpty()) {
-                val message = missingFields.joinToString("\n") { "$it 입력하지 않았습니다." }
-                showAlert(message)
-            } else {
-                lifecycleScope.launch {
+            lifecycleScope.launch {
+                if (diaryId == -1) {
+                    // 새로운 데이터 삽입
                     diaryDatabase.diaryDAO().insertDiary(diaryEntry)
-                    Toast.makeText(this@AddDiaryEntryActivity, "저장되었습니다!", Toast.LENGTH_SHORT)
-                        .show()
-                    finish() // 저장 후 액티비티 종료
+                } else {
+                    // 기존 데이터 업데이트
+                    diaryDatabase.diaryDAO().updateDiary(diaryEntry)
                 }
-            }
-
-            // Save logic here (e.g., store in a database or send to another activity)
-            if (selectedLocation != null) {
-                // Save location and other data
-                val location = selectedLocation!!
-                // Example: Save to database
+                finish() // 저장 후 종료
             }
         }
 
@@ -318,7 +312,29 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
             }
     }
 
+    private fun populateDiaryData(diary: DiaryEntryEntity) {
+        dateEditText.setText(diary.date)
+        searchedPlace.text = diary.location ?: "장소를 검색하세요."
+        satisfactionDropdown.setSelection(
+            (satisfactionDropdown.adapter as ArrayAdapter<String>).getPosition(diary.satisfaction)
+        )
+        topOutfitInput.setText(diary.top)
+        bottomOutfitInput.setText(diary.bottom)
+        outerOutfitInput.setText(diary.outer)
+        accessoriesInput.setText(diary.accessory)
+        memoInput.setText(diary.memo)
 
+        // 지도에 마커 추가 (선택된 위치)
+        diary.location?.let { location ->
+            val geocoderResult = geocoder.getFromLocationName(location, 1)
+            if (geocoderResult != null && geocoderResult.isNotEmpty()) {
+                val latLng = LatLng(geocoderResult[0].latitude, geocoderResult[0].longitude)
+                googleMap.clear()
+                googleMap.addMarker(MarkerOptions().position(latLng).title(location))
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+            }
+        }
+    }
 
     // 추가: 장소 세부정보 가져오기
     private fun fetchPlaceDetails(placeId: String) {
