@@ -1,5 +1,6 @@
 package ddwu.com.mobile.project.todaysoutfit.ui.activity
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.location.Geocoder
 import android.os.Bundle
@@ -107,10 +108,35 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
                 memo = memo
             )
 
-            lifecycleScope.launch {
-                diaryDatabase.diaryDAO().insertDiary(diaryEntry)
-                Toast.makeText(this@AddDiaryEntryActivity, "저장되었습니다!", Toast.LENGTH_SHORT).show()
-                finish() // 저장 후 액티비티 종료
+            val defaultPlaceText = "장소를 검색하세요."
+            val missingFields = mutableListOf<String>()
+
+            // 각 입력 필드가 비었는지 확인
+            if (dateEditText.text.toString().trim().isEmpty()) {
+                missingFields.add("날짜를")
+            }
+            else if (searchedPlace.text.toString().trim().isEmpty() || searchedPlace.text.toString() == defaultPlaceText) {
+                missingFields.add("장소 정보를")
+            }
+            else if(satisfactionDropdown.selectedItem.toString().trim().isEmpty()) {
+                missingFields.add("만족도를")
+            }
+            else if (topOutfitInput.text.toString().trim().isEmpty()) {
+                missingFields.add("상의 정보를")
+            }
+            else if (bottomOutfitInput.text.toString().trim().isEmpty()) {
+                missingFields.add("하의 정보를")
+            }
+            if (missingFields.isNotEmpty()) {
+                val message = missingFields.joinToString("\n") { "$it 입력하지 않았습니다." }
+                showAlert(message)
+            } else {
+                lifecycleScope.launch {
+                    diaryDatabase.diaryDAO().insertDiary(diaryEntry)
+                    Toast.makeText(this@AddDiaryEntryActivity, "저장되었습니다!", Toast.LENGTH_SHORT)
+                        .show()
+                    finish() // 저장 후 액티비티 종료
+                }
             }
 
             // Save logic here (e.g., store in a database or send to another activity)
@@ -215,6 +241,15 @@ class AddDiaryEntryActivity : AppCompatActivity(), OnMapReadyCallback {
         )
 
         datePickerDialog.show()
+    }
+
+    // 입력 에러 관리
+    private fun showAlert(message: String) {
+        AlertDialog.Builder(this)
+            .setTitle("입력 오류")
+            .setMessage(message)
+            .setPositiveButton("확인", null)
+            .show()
     }
 
     // 추가: 장소 검색 함수
