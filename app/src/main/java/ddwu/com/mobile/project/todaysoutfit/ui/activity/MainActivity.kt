@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -174,6 +175,8 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>) {
                 if (response.isSuccessful) {
                     val items = response.body()?.response?.body?.items?.item
+                    Log.d("WeatherAPI", "API Response Items: $items")
+
                     val maxTemp = items?.find { it.category == "TMX" }?.fcstValue
                     val minTemp = items?.find { it.category == "TMN" }?.fcstValue
 
@@ -183,6 +186,17 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             "최고/최저 기온 정보를 찾을 수 없습니다."
                         }
+
+                    // SKY와 PTY 데이터 가져오기
+                    val sky = items?.find { it.category == "SKY" }?.fcstValue?.toIntOrNull()
+                    val pty = items?.find { it.category == "PTY" }?.fcstValue?.toIntOrNull()
+
+                    if (sky != null && pty != null) {
+                        Log.d("WeatherImage", "SKY: $sky, PTY: $pty")
+                        updateWeatherImage(sky, pty)
+                    } else {
+                        Log.d("WeatherImage", "SKY 또는 PTY 정보를 찾을 수 없습니다. 데이터 확인 필요.")
+                    }
                 }
             }
 
@@ -190,5 +204,39 @@ class MainActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.maxMinTemp).text = "네트워크 오류 발생"
             }
         })
+    }
+
+    private fun updateWeatherImage(sky: Int, pty: Int) {
+        val weatherImg = findViewById<ImageView>(R.id.weatherImg)
+
+        // PTY 우선 판단 (강수 상태)
+        when (pty) {
+            1, 2, 4, 5, 6 -> {
+                // 비
+                weatherImg.setImageResource(R.drawable.weather_rain)
+                return
+            }
+            3, 7 -> {
+                // 눈
+                weatherImg.setImageResource(R.drawable.weather_snow)
+                return
+            }
+        }
+
+        // SKY 판단 (하늘 상태)
+        when (sky) {
+            1 -> {
+                // 맑음
+                weatherImg.setImageResource(R.drawable.weather_sun)
+            }
+            3, 4 -> {
+                // 구름 많음 또는 흐림
+                weatherImg.setImageResource(R.drawable.weather_cloud)
+            }
+            else -> {
+                // 기본 이미지 (맑음 이미지)
+                weatherImg.setImageResource(R.drawable.weather_sun)
+            }
+        }
     }
 }
